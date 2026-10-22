@@ -33,6 +33,7 @@ def show(get_list, write):
             dpg.add_selectable(
                 label=cut_text(texto), callback=ao_clicar, user_data=texto
             )
+            dpg.add_separator()
 
     # esc = fecha o app
     with dpg.handler_registry():
