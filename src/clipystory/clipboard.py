@@ -1,5 +1,7 @@
+import json
 import os
 import shutil
+import socket
 import subprocess
 from pathlib import Path
 
@@ -47,8 +49,6 @@ def verify() -> None:
         raise RuntimeError(
             "instala wl-clipboard (Sway/KDE/Hyprland) ou xclip + clipnotify (GNOME/X11)"
         )
-
-    print(_comandos)
 
 
 def is_gnome() -> bool:
@@ -99,3 +99,17 @@ def watch():
 
 def get_list() -> list[str]:
     client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    client.settimeout(2)
+
+    try:
+        client.connect(str(SOCKET_PATH))
+        client.sendall(b"lista")
+        client.shutdown(socket.SHUT_WR)
+        partes = []
+        while chunk := client.recv(4096):  # lê até o daemon desligar
+            partes.append(chunk)
+    except (FileNotFoundError, ConnectionRefusedError):
+        raise RuntimeError("daemon não está rodando (inicia com: clipystory --daemon)")
+    finally:
+        client.close()
+    return json.loads(b"".join(partes))
