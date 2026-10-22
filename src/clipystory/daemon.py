@@ -1,5 +1,6 @@
 import os
 import socket
+import threading
 import time
 from pathlib import Path
 
@@ -13,6 +14,8 @@ historico: dict[str, None] = {}
 
 
 def config_socket() -> socket.socket:
+    """cria e configura o socket"""
+
     SOCKET_PATH.unlink(missing_ok=True)  # remove o socket antigo
 
     server = socket.socket(
@@ -24,10 +27,15 @@ def config_socket() -> socket.socket:
     return server
 
 
+def handle_request(srv: socket.socket) -> None: ...
+
+
 def add(texto: str) -> None:
     """adiciona o conteúdo do clipboar no histórico, caso o item ja exista, coloca ele por último"""
+
     historico.pop(texto, None)  # se já existe, tira
     historico[texto] = None  # reinsere no fim
+
     # verifica se passou do limite
     if len(historico) > LIMITE:
         # next(iter(historico)) captura o primeiro da lista
@@ -36,6 +44,9 @@ def add(texto: str) -> None:
 
 def run() -> None:
     """loop de adição ao historico de clipboard, verifica se o texto copiado é válido e chama add()"""
+
+    server = config_socket()
+    threading.Thread(target=handle_request, args=(server,), daemon=True).start()
 
     ultimo = ""  # erro ou imagem
 
