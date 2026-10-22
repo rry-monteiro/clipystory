@@ -4,9 +4,15 @@ import dearpygui.dearpygui as dpg
 
 SIZE_FONT = 15
 FONT = Path(__file__).parent / "fonts" / "DejaVuSans.ttf"
+ALTURA_JANELA = 990
+LARGURA_JANELA = 400
+X_POSI_JANELA = 0
+Y_POSI_JANELA = 0
+LIMITE_TEXTO = 50
+ALTURA_SPACER = 0
 
 
-def cut_text(texto: str, limite: int = 50) -> str:
+def cut_text(texto: str, limite: int = LIMITE_TEXTO) -> str:
     linha = " ".join(texto.split())  # junta quebras de linha e espaços em um só
     return linha[:limite] + "..." if len(linha) > limite else linha
 
@@ -20,7 +26,16 @@ def show(get_list, write):
     historico = get_list()
 
     dpg.create_context()  # liga o pygui
-    dpg.create_viewport(title="Histórico", width=400, height=300)  # cria a janela
+    dpg.configure_app(
+        keyboard_navigation=True
+    )  # permite e ativa o uso do teclado logo na criação da janela (foco)
+    dpg.create_viewport(
+        title="Histórico",
+        width=LARGURA_JANELA,
+        height=ALTURA_JANELA,
+        x_pos=X_POSI_JANELA,
+        y_pos=Y_POSI_JANELA,
+    )  # cria a janela
 
     if FONT.exists():
         with dpg.font_registry():
@@ -34,6 +49,7 @@ def show(get_list, write):
                 label=cut_text(texto), callback=ao_clicar, user_data=texto
             )
             dpg.add_separator()
+            dpg.add_spacer(height=ALTURA_SPACER)
 
     # esc = fecha o app
     with dpg.handler_registry():
