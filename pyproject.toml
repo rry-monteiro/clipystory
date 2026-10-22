@@ -1,12 +1,12 @@
 [project]
 name = "clipystory"
 version = "0.1.0"
-description = "Um gerenciador de histórico da área de transferência para Linux (wl-clipboard e xclip), feito em Python e Tkinter"
+description = "Um gerenciador de histórico da área de transferência para Linux (wl-clipboard e xclip), feito em Python e DearPyGui"
 readme = "README.md"
 authors = [
     { name = "Raimundo", email = "ray.yh.yh@gmail.com" }
 ]
-requires-python = ">=3.12"
+requires-python = ">=3.14"
 dependencies = [
     "dearpygui>=2.3.1",
 ]
