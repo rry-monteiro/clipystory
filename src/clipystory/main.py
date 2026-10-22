@@ -1,4 +1,5 @@
 import argparse as arg
+import sys
 
 from . import clipboard, daemon
 
@@ -10,14 +11,19 @@ def main():
     grupo.add_argument("--show", action="store_true", help="abre a janela do histórico")
     args = parser.parse_args()
 
-    if args.daemon:
-        print("vigiando clipboard...")
-        clipboard.verify()  # verificação do tool
-        daemon.run() # começa a rodar o histórico
-
-    elif args.show:
-        print("pedindo pro daemon abrir a janela...")
-
+    try:
+        if args.daemon:
+            print("vigiando clipboard...")
+            clipboard.verify()
+            daemon.run()
+        elif args.show:
+            from . import window
+            print("pedindo pro daemon abrir a janela...")
+    except RuntimeError as e:
+        print(f"erro: {e}", file=sys.stderr)
+        sys.exit(1)
+    except KeyboardInterrupt:
+        sys.exit(0)
 
 
 if __name__ == "__main__":
