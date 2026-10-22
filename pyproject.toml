@@ -1,0 +1,17 @@
+[project]
+name = "clipystory"
+version = "0.1.0"
+description = "Um gerenciador de histórico da área de transferência para Linux (wl-clipboard e xclip), feito em Python e Tkinter"
+readme = "README.md"
+authors = [
+    { name = "Raimundo", email = "ray.yh.yh@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = []
+
+[project.scripts]
+clipystory = "clipystory.main:main"
+
+[build-system]
+requires = ["uv_build>=0.9,<0.10"]
+build-backend = "uv_build"
