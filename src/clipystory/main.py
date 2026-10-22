@@ -1,5 +1,7 @@
 import argparse as arg
 
+from . import clipboard, daemon
+
 
 def main():
     parser = arg.ArgumentParser()
@@ -10,6 +12,9 @@ def main():
 
     if args.daemon:
         print("vigiando clipboard...")
+        clipboard.verify()  # verificação do tool
+        daemon.run() # começa a rodar o histórico
+
     elif args.show:
         print("pedindo pro daemon abrir a janela...")
 
