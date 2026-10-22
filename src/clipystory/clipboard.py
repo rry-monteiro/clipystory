@@ -1,6 +1,7 @@
 import shutil
+import subprocess
 
-_comandos: dict = {} #dicionario de comandos | depende do tool que o usuário usa
+_comandos: dict = {}  # dicionario de comandos | depende do tool que o usuário usa
 
 
 def verify() -> None:
@@ -27,3 +28,11 @@ def verify() -> None:
         raise RuntimeError("instale wl-clipboard ou xclip")
 
     print(_comandos)
+
+
+def write(text: str):
+    """
+    copia o conteúdo pro histórico: window.py vai chamar essa função sempre que o usuário escrolher
+    o texto do histórico, assim, o texto escolhido pelo vai pro clipboar do usuário
+    """
+    subprocess.run(_comandos["escrever"], input=text, text=True, timeout=2, check=False)
