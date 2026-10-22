@@ -1,14 +1,14 @@
+import json
 import os
 import socket
+import sys
 import threading
-import time
 from pathlib import Path
 
 from . import clipboard
 
 SOCKET_PATH: Path = Path(os.environ["XDG_RUNTIME_DIR"]) / "clipystory.sock"
 LIMITE: int = 100
-INTERVALO: float = 0.5
 
 historico: dict[str, None] = {}
 
@@ -27,7 +27,16 @@ def config_socket() -> socket.socket:
     return server
 
 
-def handle_request(srv: socket.socket) -> None: ...
+def handle_request(srv: socket.socket) -> None:
+    """atende o o pedido de window, verifica se o pedido é 'lista' e envia o histórico comnpleto invertido"""
+
+    while True:
+        con, _ = srv.accept()
+        with con:
+            pedido = con.recv(64).decode()
+            if pedido == "lista":
+                lista = json.dumps(list(reversed(historico)))
+                con.sendall(lista.encode())
 
 
 def add(texto: str) -> None:
@@ -50,9 +59,11 @@ def run() -> None:
 
     ultimo = ""  # erro ou imagem
 
-    while True:
-        atual = clipboard.read()
-        if atual and atual != ultimo:  # se não é erro, nem imagem
-            add(atual)
-            ultimo = atual
-        time.sleep(INTERVALO)
+    for _ in clipboard.watch():
+        try:
+            atual = clipboard.read()
+            if atual and atual != ultimo:
+                add(atual)
+                ultimo = atual
+        except Exception as e:
+            print(f"erro: {e}", file=sys.stderr)
