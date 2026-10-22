@@ -30,9 +30,25 @@ def verify() -> None:
     print(_comandos)
 
 
-def write(text: str):
+def write(text: str) -> None:
     """
     copia o conteúdo pro histórico: window.py vai chamar essa função sempre que o usuário escrolher
     o texto do histórico, assim, o texto escolhido pelo vai pro clipboar do usuário
     """
     subprocess.run(_comandos["escrever"], input=text, text=True, timeout=2, check=False)
+
+
+def read() -> str:
+    """
+    lê o que tem dentro do clipboard do usuário e retorna o valor, em caso de imagem ou falha
+    do subprocess, retorna ""
+    """
+    try:
+        r = subprocess.run(
+            _comandos["ler"], capture_output=True, text=True, timeout=2, check=False
+        )
+    except subprocess.TimeoutExpired:
+        return ""
+    if r.returncode != 0:
+        return ""
+    return r.stdout
