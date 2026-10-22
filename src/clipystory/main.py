@@ -9,7 +9,9 @@ def main():
     grupo = parser.add_mutually_exclusive_group(required=True)
     grupo.add_argument("--daemon", action="store_true", help="vigia o clipboard")
     grupo.add_argument("--show", action="store_true", help="abre a janela do histórico")
-    grupo.add_argument("--install", action="store_true", help="liga o autostart no login")
+    grupo.add_argument(
+        "--install", action="store_true", help="liga o autostart no login"
+    )
     grupo.add_argument("--uninstall", action="store_true", help="remove o autostart")
     args = parser.parse_args()
 
@@ -18,10 +20,10 @@ def main():
             clipboard.verify()
             daemon.run()
         elif args.show:
-            """ from . import window """
+            from . import window
 
-            _itens = clipboard.get_list()
-            """ window.open(itens) """
+            clipboard.verify()
+            window.show(clipboard.get_list, clipboard.write)
         elif args.install:
             autostart.install()
         elif args.uninstall:
